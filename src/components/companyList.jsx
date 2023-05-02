@@ -15,7 +15,8 @@ const ListCompanies = () => {
   }, []);
 
     const handleButtonClick = (companyId) => {
-        navigate('/menu');
+      localStorage.setItem('selectedCompanyId', companyId);
+        navigate('/inventory');
       }
 
   return (

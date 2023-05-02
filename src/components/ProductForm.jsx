@@ -1,5 +1,6 @@
-import {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Alerta from "./Alerta";
+import {Link, useNavigate} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 import useAuth from '../hooks/useAuth';
@@ -14,34 +15,43 @@ const ProductForm = () => {
     const [name, setName] = useState('');
     const [stock, setStock] = useState('');
     const [price, setPrice] = useState('');
-    const [company, setCompany] = useState('');
-    // const [companies, setCompanies] = useState([]);
-    // const [selectedCompany, setSelectedCompany] = useState('');
+    const [companyObj, setCompany] = useState({});
+    const [companies, setCompanies] = useState([]);
+    const [selectedCompany, setSelectedCompany] = useState('');
 
+    const navigate = useNavigate();   
 
-    // useEffect(() => {
-    //     const getCompanies = async () => {
-    //       const response = await clienteAxios.get('/companies');
-    //       setCompanies(response.data);
-    //     };
-    //     getCompanies();
-    //   }, []);
+    useEffect(() => {
+        const companyData = localStorage.getItem('companyData');
+
+        const getCompanies = async () => {
+          const response = await clienteAxios.get('/companies');
+        //   setCompanies(response.data);
+        setCompanies(response.data.map(company => ({ id: company._id, name: company.name })));
+
+        };
+        // getCompanies();
+        console.log('companyDatacompanyData',companyData)
+        companyData ==null || Object.keys(companyData).length === 0 && companyData.constructor === Object
+        ? getCompanies()
+        : setCompany(companyData)
+
+        console.log('companyObj',companyObj)
+      }, []);
       
 
 
     const handleSubmit = async e =>{
         e.preventDefault();
 
-        // navigate('/inventory');
 
         try {
-            const response = await clienteAxios.post('/products', {
-                name, stock, price, company
+            const response = await clienteAxios.post('/product', {
+                name, stock, price, company:selectedCompany
             });
             
-            // localStorage.setItem('data', response.data);
             toast.success('Producto creado exitosamente.');
-            navigate('/inventory');
+            navigate('/inventary');
 
             console.log('response', response)
             return (
@@ -54,7 +64,7 @@ const ProductForm = () => {
         } catch (error) {
             if (error.response) {
                 const errorMessage = error.response.data.message;
-                toast.error(`Error al crear el produco: ${errorMessage}`);
+                toast.error(`Error al crear el producto: ${errorMessage}`);
               } else {
             setAlerta({
                 msg: 'Error',
@@ -63,12 +73,10 @@ const ProductForm = () => {
         }
         }
 
-                    const response = await clienteAxios.post('/companies', {
+                const response = await clienteAxios.post('/companies', {
                 name, address, nit, phone
             });
             
-            // localStorage.setItem('data', response.data);
-            // navigate('/menu');
 
             console.log('response', response)
 
@@ -81,12 +89,44 @@ const ProductForm = () => {
             <h2 className="font-black text-3xl text-center my-10">Registrar producto</h2>
  
             <div className="flex justify-center">
+                
                 <div className="w-full md:w-1/2 bg-white shadow rounded-lg p-5">
 
                     {msg && <Alerta alerta={alerta}/>}
                     <form 
                         onSubmit={handleSubmit}
                     >
+                        {companyObj.length == 0  ? (
+                            <div>
+                            <label htmlFor="company" className="font-bold text-gray-600">Empresa</label>
+                            <input
+                                type="text"
+                                id="company"
+                                value={companies.find(company => company.id === selectedCompany)?.name}
+                                className="border bg-gray-50 p-2 w-full mt-5 rounded-lg"
+                                disabled
+                            />
+                            </div>
+                        ) : (
+                            <div className="my-3">
+                                <label htmlFor="company" className="font-bold text-gray-600">Empresa</label>
+                                <select
+                                    id="company"
+                                    value={selectedCompany}
+                                    className="border bg-gray-50 p-2 w-full mt-5 rounded-lg"
+                                    onChange={(e) => setSelectedCompany(e.target.value)}
+                                >
+                                    <option value="">Selecciona una Empresa</option>
+                                    {companies.map((company) => (
+                                    <option key={company.id} value={company.id}>
+                                        {company.name}
+                                    </option>
+                                    
+                                    ))}
+                                </select>
+                            </div>
+                         )} 
+
                         <div className="my-3">
                             <label htmlFor="" className="font-bold text-gray-600">Nombre</label> 
                             <input 
@@ -110,7 +150,7 @@ const ProductForm = () => {
                         </div>
 
                         <div className="my-3">
-                            <label htmlFor="" className="font-bold text-gray-600">Price</label> 
+                            <label htmlFor="" className="font-bold text-gray-600">Precio</label> 
                             <input 
                                 type="text"
                                 className="border bg-gray-50 p-2 w-full mt-5 rounded-lg"
@@ -120,10 +160,7 @@ const ProductForm = () => {
                             />   
                         </div>
 
-                        {/* <div className="my-3">
-                            <label htmlFor="" className="font-bold text-gray-600">Company</label> 
-                          
-                        </div> */}
+
                         
 
                         <input 

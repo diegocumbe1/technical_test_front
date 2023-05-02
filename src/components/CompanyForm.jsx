@@ -11,10 +11,7 @@ const CompanyForm = () => {
     const {guardarPassword} = useAuth();
 
     const [alerta, setAlerta] = useState({});
-    // const [password, setPassword] = useState({
-    //     pwd_actual: '',
-    //     pwd_nuevo: ''
-    // });
+
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
     const [nit, setNit] = useState('');
