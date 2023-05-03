@@ -100,14 +100,14 @@ const Login = () => {
                     />
                 </form>
 
-                <nav className='mt-10 lg:flex lg:justify-between'>
+                {/* <nav className='mt-10 lg:flex lg:justify-between'>
                     <Link to="#"
                         className='block text-center my-5 text-gray-500'
                     >¿No tienes una cuenta? Registrate</Link>
                     <Link to="#"
                         className='block text-center my-5 text-gray-500'
                     >Olvide mi contraseña</Link>
-                </nav>
+                </nav> */}
             </div>    
         </>
     );

@@ -16,11 +16,11 @@ export const Menu = () => {
                         <h2 className="font-bold text-xl mb-2">Crear empresa</h2>
                         <p>Crea una nueva empresa y comienza a agregar productos.</p>
                         <Link 
-                            to="/product-form"
+                            to="/company-form"
                             className='block text-center my-5 bg-indigo-600 rounded text-white p-1'
                             style={{position: 'absolute', bottom: 0, left: 20, right: 20}}
                         >
-                            Crear producto
+                            Crear Empresa
                         </Link>
                     </div>
                 </div>
@@ -61,7 +61,7 @@ export const Menu = () => {
                         <h2 className="font-bold text-xl mb-2">Inventario general</h2>
                         <p>Consulta el inventario general de todos los productos registrados en el sistema.</p>
                         <Link 
-                            to="/inventary"
+                            to="/inventary/0"
                             className='block text-center my-5 bg-indigo-600 rounded text-white p-1'
                             style={{position: 'absolute', bottom: 0, left: 20, right: 20}}
                         >

@@ -1,6 +1,6 @@
 import React, { useState, useEffect }  from 'react'
 import { Table, Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, useNavigate, useParams } from 'react-router-dom';
 import Alerta from "./Alerta";
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -13,20 +13,30 @@ const Inventary = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [alerta, setAlerta] = useState({});
     const [recipientEmail, setRecipientEmail] = useState('');
+    const { companyId } = useParams();
+    const [showCompanyName, setShowCompanyName] = useState(false);
+
 
     useEffect(() => {
         const getProducts = async () => {
-
-        const response = await clienteAxios.get('/products');
+        const route = companyId == 0 ?'/products' : `/products/${companyId}`
+        const response = await clienteAxios.get(route);
         setProducts(response.data);
         };
+        if(companyId != 0){
+          setShowCompanyName(true);
+        } 
         getProducts();
     }, []);
 
 
+
+
+
     const handleDownloadPdfClick = async () => {
         try {
-          const response = await clienteAxios.get('/download-pdf', {
+          const route = companyId == 0 ?'/download-pdf' : `/download-pdf/${companyId}`
+          const response = await clienteAxios.get(route, {
             responseType: 'blob', // Indica que la respuesta es un archivo
           });
           console.log('response',response)
@@ -43,7 +53,7 @@ const Inventary = () => {
             // Mostrar la alerta de descarga completa
             window.URL.revokeObjectURL(url);
             alert('Descarga completada');
-            // toast.success('El PDF ha sido descargado correctamente.');
+            toast.success('El PDF ha sido descargado correctamente.');
           };
           link.click();
           
@@ -77,7 +87,7 @@ const Inventary = () => {
         } catch (error) {
             if (error.response) {
                 const errorMessage = error.response.data.message;
-                toast.error(`Error al crear el producto: ${errorMessage}`);
+                toast.error(`Error al eviar correo: ${errorMessage}`);
               } else {
             setAlerta({
                 msg: 'Error',
@@ -108,28 +118,32 @@ const Inventary = () => {
                 <thead>
                     <tr>
                     <th>#</th>
-                    <th>empresa</th>
+                    {!showCompanyName && <th>Empresa</th>}
                     <th>Nombre</th>
                     <th>Stock</th>
                     <th>Precio</th>
-                    {/* <th>Telefono</th> */}
-                    {/* <th></th> */}
+
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((company, index) => (
+                {products.length > 0 ? (
+                    products.map((company, index) => (
                     <tr key={company.id}>
                         <th scope="row">{index + 1}</th>
-                        <td>{company.company.name}</td>
+                        {!showCompanyName && <td>{company.company.name} </td>}
                         <td>{company.name}</td>
                         <td>{company.stock}</td>
                         <td>{company.price}</td>
-                        {/* <td>{company.phone}</td> */}
-                        {/* <td>
-                        <button className='p-2 bg-blue-600 text-center text-white rounded' onClick={() => handleButtonClick(company.id)}>Ver Productos</button>
-                        </td> */}
+
                     </tr>
-                    ))}
+                    ))
+                  ): (
+                    <tr>
+                      <td colSpan="5" className="text-center">
+                        No hay productos disponibles
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
             </Table>
             <Modal isOpen={modalOpen} toggle={toggleModal}>

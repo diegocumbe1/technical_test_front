@@ -15,8 +15,8 @@ const ListCompanies = () => {
   }, []);
 
     const handleButtonClick = (companyId) => {
-      localStorage.setItem('selectedCompanyId', companyId);
-        navigate('/inventory');
+
+        navigate(`/inventary/${companyId}`);
       }
 
   return (
@@ -45,7 +45,8 @@ const ListCompanies = () => {
                 <td>{company.address}</td>
                 <td>{company.phone}</td>
                 <td>
-                  <button className='p-2 bg-blue-600 text-center text-white rounded' onClick={() => handleButtonClick(company.id)}>Ver Productos</button>
+                  <button className='p-2 bg-blue-600 text-center text-white rounded' 
+                  onClick={() => handleButtonClick(company._id)}>Ver Productos</button>
                 </td>
               </tr>
             ))}
