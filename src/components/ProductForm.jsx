@@ -51,7 +51,7 @@ const ProductForm = () => {
             });
             
             toast.success('Producto creado exitosamente.');
-            navigate('/inventary');
+            navigate('/inventary/0');
 
             console.log('response', response)
             return (
